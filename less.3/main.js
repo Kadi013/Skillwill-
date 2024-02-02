@@ -1,17 +1,14 @@
 // პირველი დავალება
-function oddNumberOperation(n) {
-    let firstSister = (n * (n + 1)) / 2;
-  
-    let secondSister = 1;
-    for (let i = 3; i <= n; i++) {
-      secondSister *= i;
-    }
-  
-    return [firstSister, secondSister];
+function oddNumberOperation(num0, num1, ...arr) {
+  let total = 1;
+  for (const num of arr) {
+    num0 = num0 + num1;
+    total *= num;
   }
-  let result = oddNumberOperation(5);
-console.log(result);
+  return [num0 - num1, total]; 
+}
 
+console.log(oddNumberOperation(11, 11, 3, 5));
 // მეორე დავალება
 const user = {
     banks: [
