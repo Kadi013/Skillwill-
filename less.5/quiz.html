@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ქვიზი</title>
+    <style>
+        /* მესამე დავალება */
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #quiz-container { max-width: 600px; margin: auto; }
+        .question { font-size: 18px; margin-bottom: 10px; }
+        .options { display: flex; justify-content: center; gap: 10px; }
+        .option { padding: 10px; cursor: pointer; border: 1px solid #ccc; border-radius: 5px; }
+        .option:hover { background-color: #f0f0f0; }
+        #result { margin-top: 20px; font-weight: bold; }
+        #points { margin-top: 10px; }
+        .correct { background-color: #a3f5a3; }
+        .incorrect { background-color: #ff9999; }
+    </style>
+</head>
+<body>
+<!-- მესამე დავალება -->
+<div id="quiz-container">
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div id="result"></div>
+    <div id="points">ქულა: <span id="pointCounter">0</span></div>
+</div>
+
+<script>
+    // მესამე დავალება
+    const quizData = [
+        { question: "საფრანგეთის დედაქალაქი?", options: ["პარიზი", "ბერლინი", "მადრიდი", "რომი"], correctAnswer: "პარიზი" },
+        { question: "რომელ პლანეტას ეძახიან წითელ პლანეტას?", options: ["მარსი", "ვენერა", "იუპიტერი", "სატურნი"], correctAnswer: "მარსი" },
+        { question: "რომელია ყველაზე დიდი ცხოველი?", options: ["სპილო", "ლურჯი ვეშაპი", "ჟირაფი", "ჰიპოპოტამი"], correctAnswer: "ლურჯი ვეშაპი" },
+        { question: "რომელი პროგრამული ენა იცის ვებ-მა?", options: ["Java", "Python", "JavaScript", "C++"], correctAnswer: "JavaScript" },
+        { question: "ვინ დაწერა რომეო და ჯულიეტა?", options: ["ჩარლს დიკენსი", "ვილიამ შექსპირი", "ჯეინ ოსტინი", "მარკ ტვენი"], correctAnswer: "ვილიამ შექსპირი" },
+    ];
+
+    let currentQuestionIndex = 0;
+    let points = 0;
+    let answerTimeout;
+
+    const $ = (selector) => document.querySelector(selector);
+    const createElement = (type) => document.createElement(type);
+
+    const loadQuestion = () => {
+        const currentQuestion = quizData[currentQuestionIndex];
+        $('#question').innerText = currentQuestion.question;
+
+        const optionsContainer = $('#options');
+        optionsContainer.innerHTML = '';
+
+        currentQuestion.options.forEach((option, index) => {
+            const optionElement = createElement('div');
+            optionElement.className = 'option';
+            optionElement.innerText = option;
+            optionElement.addEventListener('click', () => checkAnswer(index));
+            optionsContainer.appendChild(optionElement);
+        });
+
+        $('#nextBtn').disabled = true;
+    };
+
+    const checkAnswer = (optionIndex) => {
+        clearTimeout(answerTimeout);
+
+        const currentQuestion = quizData[currentQuestionIndex];
+        const selectedOption = currentQuestion.options[optionIndex];
+
+        const resultContainer = $('#result');
+        const options = document.querySelectorAll('.option');
+
+        options.forEach((option, index) => {
+            option.classList.remove('correct', 'incorrect');
+            if (currentQuestion.correctAnswer === currentQuestion.options[index]) {
+                option.classList.add('correct');
+            } else {
+                option.classList.add('incorrect');
+            }
+        });
+
+        if (selectedOption === currentQuestion.correctAnswer) {
+            resultContainer.innerText = 'სწორია!';
+            points++;
+            $('#pointCounter').innerText = points;
+        } else {
+            resultContainer.innerText = `არასწორია! სწორი პასუხი არის ${currentQuestion.correctAnswer}.`;
+        }
+
+        answerTimeout = setTimeout(nextQuestion, 2000);
+    };
+
+    const nextQuestion = () => {
+        $('#result').innerText = '';
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            $('#quiz-container').innerHTML = `<h2>ქვიზი დასრულდა!</h2><p>ჯამური ქულა: ${points}</p>`;
+        }
+    };
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
